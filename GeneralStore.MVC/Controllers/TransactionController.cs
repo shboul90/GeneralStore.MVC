@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -85,6 +86,11 @@ namespace GeneralStore.MVC.Controllers
         // Get: Transaction/Delete/{id}
         public ActionResult Delete(int? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             Transaction transaction = _db.Transactions.Find(id);
 
             if (transaction == null)
@@ -108,8 +114,13 @@ namespace GeneralStore.MVC.Controllers
         }
 
         // Get: Transaction/Edit/{id}
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             Transaction transaction = _db.Transactions.Find(id);
 
             if (transaction == null)
