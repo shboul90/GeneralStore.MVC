@@ -6,6 +6,11 @@
 
 <h2>Create</h2>
 
+@if(ViewData["ErrorMessage"]!=null)
+            {
+                <h2 class="text-center">@ViewData["ErrorMessage"]</h2>
+            }
+
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()

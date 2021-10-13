@@ -20,8 +20,13 @@ namespace GeneralStore.MVC.Controllers
         }
 
         // GET: Transaction/{id}
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             Transaction transaction = _db.Transactions.Find(id);
 
             if(transaction == null)
@@ -31,10 +36,21 @@ namespace GeneralStore.MVC.Controllers
             return View(transaction);
         }
 
+
         // GET: Transaction/Create
         // viewData / ViewBags
         public ActionResult Create()
         {
+            //ViewBag.CustomerItems = _db.Customers.Select(customer => new
+            //SelectListItem
+            //{
+            //    Text = customer.FirstName + " " + customer.LastName,//viewed by customer
+            //    Value = customer.CustomerID.ToString()
+            //});
+
+            //ViewBag.ProductItems = new SelectList(_db.Products, "CustomerID", "FullName");
+            //return View(new Transaction());
+            
             var viewModel = new CreateTransactionViewModel();
 
             viewModel.Customers = _db.Customers.Select(customer => new SelectListItem
@@ -57,29 +73,26 @@ namespace GeneralStore.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateTransactionViewModel viewModel)
         {
-
-            viewModel.Customers = _db.Customers.Select(customer => new SelectListItem
+            if(ModelState.IsValid)
             {
-                Text = customer.FirstName + " " + customer.LastName,
-                Value = customer.CustomerID.ToString()
-            });
+                Transaction transaction = new Transaction()
+                {
+                    CustomerID = viewModel.CustomerID,
+                    ProductId = viewModel.ProductId
+                };
 
-            viewModel.Products = _db.Products.Select(product => new SelectListItem
-            {
-                Text = product.Name,
-                Value = product.ProductId.ToString()
-            });
+                _db.Transactions.Add(transaction);
 
-            Transaction transaction = new Transaction()
-            {
-                CustomerID = viewModel.CustomerID,
-                ProductId = viewModel.ProductId
-            };
-            
+                if(_db.SaveChanges()==1)
+                {
+                    return RedirectToAction("Index");
+                }
 
-            _db.Transactions.Add(transaction);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+                ViewData["ErrorMessage"] = "Couldn't save your tansaction please try again later";
+            }
+
+            ViewData["ErrorMessage"] = "Model State was invalid";
+            return View(viewModel);
 
         }
 
@@ -148,11 +161,14 @@ namespace GeneralStore.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Transaction transaction)
         {
+            if(ModelState.IsValid)
+            {
+                _db.Entry(transaction).State = EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-            _db.Entry(transaction).State = EntityState.Modified;
-            _db.SaveChanges();
-            return RedirectToAction("Index");
-
+            return View(transaction);
         }
     }
 }

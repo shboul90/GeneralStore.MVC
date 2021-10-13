@@ -12,28 +12,34 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CustomerID)
+            @Html.DisplayNameFor(model => model.TransactionID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProductId)
+            @Html.DisplayNameFor(model => model.Customer.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Product.Name)
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.CustomerID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ProductId)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TransactionID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TransactionID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TransactionID })
-        </td>
-    </tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.TransactionID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Customer.FullName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Product.Name)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.TransactionID }) |
+        @Html.ActionLink("Details", "Details", new { id = item.TransactionID }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.TransactionID })
+    </td>
+</tr>
 }
 
 </table>
